@@ -9,7 +9,7 @@ import yfinance as yf #this is for downloading stock data
 import requests as r
 import os
 import zipfile
-from io import StringIO
+import ipython_pygments_lexers
 from bs4 import BeautifulSoup
 
 
