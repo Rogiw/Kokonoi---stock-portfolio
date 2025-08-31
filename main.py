@@ -9,8 +9,42 @@ import yfinance as yf #this is for downloading stock data
 import requests as r
 import os
 import zipfile
-import ipython_pygments_lexers
+import io
 from bs4 import BeautifulSoup
+from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS 
+
+
+
+
+
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#FrontEnd
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/buscar_empresa', methods=['GET'])
+def buscar_empresa():
+    nome = r.args.get('nome', '').lower()
+    
+    if not nome:
+        return jsonify({"erro": "Por favor, informe o nome de uma empresa"})
+    
+    resultados = [empresa for empresa in EMPRESAS if nome in empresa['nome'].lower()]
+    
+    if not resultados:
+        return jsonify({"mensagem": "Nenhuma empresa encontrada com esse nome"})
+    
+    return jsonify(resultados)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+
 
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -18,6 +52,19 @@ from bs4 import BeautifulSoup
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#funcoes para calcular metricas de cada empresa
+
+
+
+
+
+
+
+
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#funcoes de busca de dados e algumas ferramentas
 def obter_Ticker_yf(país_empresa):
 
     país_empresa = país_empresa.upper()
@@ -252,12 +299,123 @@ def dates_to_periodo():
 #classes
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 #2008-03-01 to 2025-03-01
+class carteira:
+    def __init__(self, name)
+        self.name = name
+
+class empresa:
+  def __init__(self, name, cnpj, ticker, descrição, setor, dados):
+    self.name = name
+    self.cnpj = cnpj
+    self.ticker = ticker
+    self.descrição = descrição
+    self.setor = setor
+    self.dados = dados
+
+
+    def LiquidezCorrente():
+        """Ativo Circulante / Passivo Circulante- Saúde de curto prazo; >1.5 é bom."""
+    def DividaLiquida():
+        """(Empréstimos CP + LP - Caixa) / EBITDA -	Capacidade de pagar dívida; <3 é saudável."""
+    def MargenLiquida():
+        """Lucro Líquido / Receita Líquida -	Eficiência em gerar lucro; consistência é key."""
+    def roe():
+        """ (Return on Assets)	Lucro Líquido / Ativo Total -	Eficiência no uso dos ativos; quanto maior, melhor."""
+    def PL():
+        """(Preço/Lucro)	Preço da Ação / Lucro por Ação (LPA)	Valuation; compare com média do setor."""
+    def PVP():
+        """(Preço/Valor Patrimonial)	Preço da Ação / Valor Patrimonial por Ação (VPA)	Valuation; <1 pode ser subvalorizado."""
+    def EVEBITDA():
+        """Enterprise Value / EBITDA	Valuation ajustado por dívida; menor é melhor."""
+    def FCORL():
+        """Fluxo de Caixa Operacional / Receita Líquida	Qualidade da receita; >0.2 é bom."""
+    def FCOLL():
+        """Fluxo de Caixa Operacional / Lucro Líquido	Qualidade do lucro; próximo de 1 ou maior é ideal."""
+    def CAGR():
+        """Receita (5 anos)	(Receita Ano Atual / Receita Ano Base)^(1/5) - 1	Crescimento sustentável da receita."""
+
+
+
+
+
+
+class setor:
+    def __init__(self, nome):
+        self.nome = nome
+        self.empresas = []
+
+    def adicionar_empresa(self, empresa):
+        self.empresas.append(empresa)
+
+    def media_setor(self):
+        pass
+    
+    
+    #Comparar o df de todas que pegar da cvm que tiver no mesmo setor
+    def comparar_empresas(self, empresa):
+        media_setor = self.media_setor()
+        meida_empresa = empresa.media_lucros()
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------    
+#Sublicasses para os principais setores da cabeça do dev
+class mineração(Setor):
+    """Exploração & Produção de Petróleo e Gás, Equipamentos & Serviços de Petróleo"""
+    def __init__()
+class Materiais(Setor):
+    """Produtos Químicos, Materiais de Construção, Contêineres & Embalagens, Metais & Mineração"""
+    def __init__()
+class Industrias(Setor):
+    """Capital Goods, Serviços Comerciais & Profissionais, Transporte"""
+    def __init__()
+class BensDiscricionários(Setor):
+    """Automóveis e Componentes, Bens Duráveis, Hoteleira & Lazer, Mídia & Publicidade, Varejo Discricionário"""
+    def __init__()
+class BensEssenciais():
+    """Produtos de Uso Pessoal, Alimentos, Bebidas & Tabaco, Varejo de Alimentos & Medicamentos"""  
+    def __init__()
+class Saude():
+    """Equipamentos & Serviços de Saúde, Tecnologia & Suprimentos de Saúde, Empresas Farmacêuticas, Biotecnologia"""
+    def __init__()
+class Financeiro():
+    """Bancos, Diversificados Financeiros, Seguradoras, Imobiliário (REITs)"""
+    def __init__()
+class TI():
+    """	Serviços & Software de TI, Hardware & Equipamentos de TI, Semiconductores & Equipamentos"""
+    def __init__()
+class Comunicacoes():
+    """	Serviços de Telecomunicações, Mídia & Entretenimento"""
+    def __init__()
+class Utilidadaes():
+    """	Utilidades Elétricas, Utilidades de Gás, Utilidades de Água"""
+    def __init__()
+class Imobiliario():
+    """Desenvolvimento Imobiliário, Serviços Imobiliários, REITs (diversos tipos)"""
+    def __init__()
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------       
+
+
+
+
+
+
+
 
 
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 #main variables
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#estruturar as primeiras coisas que quero que faça
+
+
+
+
+
+
 tela_inicial = print("Analisador Financeiro de Empresas - v0.1")
 país_empresa = input("Digite o país da empresa (ex: US, BR, JP): ").upper()
 empresa = obter_Ticker_yf(país_empresa)
